@@ -6,6 +6,25 @@ class PluginService
 {
     /*
      * |--------------------------------------------------------------------------
+     * | Gets the plugin dir
+     * |--------------------------------------------------------------------------
+     * | @return string - The absolute plugin  dir
+     * |--------------------------------------------------------------------------
+     */
+    public static function getPluginDir()
+    {
+        $pluginFile = __DIR__;
+
+        // if pluginFile contains /vendor remove it and all characters after
+        if (strpos($pluginFile, '/vendor') !== false) {
+            $pluginFile = substr($pluginFile, 0, strpos($pluginFile, '/vendor'));
+        }
+
+        return $pluginFile;
+    }
+
+    /*
+     * |--------------------------------------------------------------------------
      * | Gets the plugin file
      * |--------------------------------------------------------------------------
      * | @return string - The absolute plugin file path
@@ -13,8 +32,8 @@ class PluginService
      */
     public static function getPluginFile()
     {
-        // go back until there is a file same named as directory
-        $pluginFile = __DIR__;
+        $pluginFile = static::getPluginDir();
+
         while (!file_exists($pluginFile . '/' . basename($pluginFile) . '.php')) {
             if (dirname($pluginFile) == $pluginFile) {
                 break;
@@ -25,7 +44,7 @@ class PluginService
         // if plugin file not found try to check php files for plugin description in head
         if ($pluginFile == dirname($pluginFile)) {
 
-            $pluginFile = __DIR__;
+            $pluginFile = static::getPluginDir();
             $pluginFile_found = false;
 
             while (!$pluginFile_found) {
@@ -50,7 +69,6 @@ class PluginService
 
 
                 foreach ($files as $file) {
-                    echo $pluginFile . '/' . $file . PHP_EOL;
                     if (strpos($file, '.php') !== false) {
                         $fileContent = file_get_contents($pluginFile . '/' . $file);
                         if (
@@ -88,3 +106,4 @@ class PluginService
         // TODO
     }
 }
+echo PluginService::getPluginFile();
