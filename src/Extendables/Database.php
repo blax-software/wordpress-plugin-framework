@@ -1,6 +1,6 @@
 <?php
 
-namespace Blax\Wordpress;
+namespace Blax\Wordpress\Extendables;
 
 interface DatabaseInterface
 {

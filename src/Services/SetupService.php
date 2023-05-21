@@ -8,6 +8,13 @@ class SetupService
      * |--------------------------------------------------------------------------
      * | Changes namespace of a PHP file
      * |--------------------------------------------------------------------------
+     * | @param string $filePath
+     * | @param string $newNamespace
+     * | @return bool
+     * |--------------------------------------------------------------------------
+     * |
+     * | Only changes the namespace of the PHP file if the namespace is found
+     * |
      */
     public static function changeNamespaceOfFile($filePath, $newNamespace)
     {
