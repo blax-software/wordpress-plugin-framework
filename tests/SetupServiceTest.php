@@ -6,7 +6,7 @@ use Blax\Wordpress\Services\SetupService;
 
 class SetupServiceTest extends \PHPUnit\Framework\TestCase
 {
-    public function test_namespaces()
+    public function test_get_and_change_namespaces()
     {
         // get current namespace
         $originalNamespace = SetupService::getNamespaceOfFile(__FILE__);
