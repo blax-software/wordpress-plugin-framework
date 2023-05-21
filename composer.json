@@ -12,5 +12,8 @@
             "name": "Blax Software",
             "email": "office@blax.at"
         }
-    ]
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^10.1"
+    }
 }
