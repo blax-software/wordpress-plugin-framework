@@ -106,4 +106,3 @@ class PluginService
         // TODO
     }
 }
-echo PluginService::getPluginFile();
