@@ -7,7 +7,7 @@ interface ModelInterface
     const DATABASE = '';
 }
 
-class Model implements ModelInterface
+abstract class Model implements ModelInterface
 {
     public static $instance = null;
     public static $current_sql = null;

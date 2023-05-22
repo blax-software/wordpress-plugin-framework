@@ -2,7 +2,7 @@
 
 namespace Blax\Wordpress\Extendables;
 
-class Plugin
+abstract class Plugin
 {
     private static $instance = null;
 

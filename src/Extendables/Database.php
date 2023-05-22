@@ -9,7 +9,7 @@ interface DatabaseInterface
     public static function migrate();
 }
 
-class Database implements DatabaseInterface
+abstract class Database implements DatabaseInterface
 {
     public static $instance = null;
 
