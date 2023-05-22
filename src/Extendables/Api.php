@@ -7,7 +7,7 @@ abstract class Api
     public static const NAMESPACE = 'blax/v1';
     public static const ROUTE = '/example';
 
-    abstract public static function handle();
+    abstract public static function handle(\WP_REST_Request $request);
 
     public function __construct()
     {
