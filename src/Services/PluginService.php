@@ -127,4 +127,23 @@ class PluginService
             ? '0.0.0'
             : $version;
     }
+
+    /*
+     * |--------------------------------------------------------------------------
+     * | Set current plugin version number
+     * |--------------------------------------------------------------------------
+     * | @return bool
+     * |--------------------------------------------------------------------------
+     * // TODO test
+     */
+    public static function setVersion($version)
+    {
+        $plugin_file_content = file_get_contents(static::getPluginFile());
+
+        $version = preg_replace('/(\* Version:)(\s+)(\d+\.\d+\.\d+)/', '$1 $2' . $version, $plugin_file_content);
+
+        return (!$version)
+            ? '0.0.0'
+            : $version;
+    }
 }
