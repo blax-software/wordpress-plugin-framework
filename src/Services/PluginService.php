@@ -86,17 +86,15 @@ class PluginService
      * |--------------------------------------------------------------------------
      * | @return bool
      * |--------------------------------------------------------------------------
-     * // TODO test
      */
     public static function setVersion($new_version)
     {
         $plugin_file_content = file_get_contents(static::getPluginFile());
-        $current_version = static::getVersion();
 
         $regex = '/(?<=Version:).+(?=\n|\s)/';
         preg_match($regex, $plugin_file_content, $matches);
 
-        $whitespaces = explode($current_version, $matches[0])[0];
+        $whitespaces = explode(static::getVersion(), $matches[0])[0];
 
         $plugin_file_content = preg_replace($regex, $whitespaces . $new_version, $plugin_file_content, 1);
 
