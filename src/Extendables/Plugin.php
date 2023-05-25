@@ -10,6 +10,7 @@ abstract class Plugin
     public static $plugin_absolute_path = null;
     public static $plugin_loaded_classes = [];
     public static $plugin_translation_domain = null;
+    public static $plugin_namespace = null;
 
     /*
      * |--------------------------------------------------------------------------
@@ -26,9 +27,15 @@ abstract class Plugin
         if (self::$instance) return self::$instance;
         self::$instance = $this;
 
-        static::$plugin_name = basename(__DIR__);
-        static::$plugin_absolute_path = __DIR__;
-        static::$plugin_translation_domain = basename(__DIR__);
+        $reflection = new \ReflectionClass(static::class);
+        $plugin_file = $reflection->getFileName();
+        $plugin_dir = dirname($plugin_file);
+
+        // child namespace
+        static::$plugin_namespace = $reflection->getNamespaceName();
+        static::$plugin_name = basename($plugin_dir);
+        static::$plugin_absolute_path = $plugin_dir;
+        static::$plugin_translation_domain = basename($plugin_dir);
 
         self::loadI18n();
         self::loadClasses();

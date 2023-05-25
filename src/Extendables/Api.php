@@ -4,8 +4,8 @@ namespace Blax\Wordpress\Extendables;
 
 abstract class Api
 {
-    public static const NAMESPACE = 'blax/v1';
-    public static const ROUTE = '/example';
+    public const NAMESPACE = 'blax/v1';
+    public const ROUTE = '/example';
 
     abstract public static function handle(\WP_REST_Request $request);
 
