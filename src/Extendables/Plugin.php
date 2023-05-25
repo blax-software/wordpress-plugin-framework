@@ -32,7 +32,7 @@ abstract class Plugin
         $plugin_dir = dirname($plugin_file);
 
         // child namespace
-        static::$plugin_namespace = $reflection->getNamespaceName();
+        static::$plugin_namespace = static::$plugin_namespace ?? $reflection->getNamespaceName();
         static::$plugin_name = basename($plugin_dir);
         static::$plugin_absolute_path = $plugin_dir;
         static::$plugin_translation_domain = basename($plugin_dir);

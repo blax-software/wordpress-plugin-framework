@@ -32,82 +32,35 @@ class PluginService
      */
     public static function getPluginFile($path = null)
     {
-        $pluginFile = ($path ?? static::getPluginDir());
-        $pluginFile_found = false;
+        $plugin_dir = ($path ?? static::getPluginDir());
 
-        $debug_output = function ($message) {
-            echo PHP_EOL . $message;
-        };
+        // show files inside plugin dir
+        $files = scandir($plugin_dir);
 
-        while (!file_exists($pluginFile . '/' . basename($pluginFile) . '.php')) {
-            $debug_output('Try: ' . $pluginFile);
-            if (dirname($pluginFile) == $pluginFile) {
-                break;
+        // remove all files not ending with .php
+        foreach ($files as $key => $file) {
+            if (strpos($file, '.php') === false) {
+                unset($files[$key]);
             }
-            $pluginFile = dirname($pluginFile);
-            $debug_output('New: ' . $pluginFile);
         }
 
-        // if plugin file not found try to check php files for plugin description in head
-        if ($pluginFile == dirname($pluginFile)) {
+        // get first file same named as plugin dir
+        $same_name_file = ($plugin_dir) . '/' . basename($plugin_dir) . '.php';
 
-            $pluginFile = ($path ?? static::getPluginDir());
-            $pluginFile_found = false;
-
-
-            while (!$pluginFile_found) {
-                $files = scandir($pluginFile);
-                $debug_output('Scan: ' . $pluginFile);
-
-                // exclude files starting with .
-                $files = array_filter($files, function ($file) {
-                    if ($file[0] == '.') {
-                        return false;
-                    }
-
-                    if (is_dir($file)) {
-                        return false;
-                    }
-
-                    if (strpos($file, '.php') === false) {
-                        return false;
-                    }
-
-                    return true;
-                });
-
-
-                foreach ($files as $file) {
-                    $debug_output('Check: ' . $file);
-                    if (strpos($file, '.php') !== false) {
-                        $fileContent = file_get_contents($pluginFile . '/' . $file);
-                        if (
-                            strpos($fileContent, 'Plugin Name:') !== false
-                            && __FILE__ != $pluginFile . '/' . $file
-                        ) {
-                            $pluginFile_found = true;
-                            $pluginFile = $pluginFile . '/' . $file;
-                            break;
-                        }
-                        unset($fileContent);
-                    }
-                }
-
-                $pluginFile = dirname($pluginFile);
-
-                if ($pluginFile == dirname($pluginFile)) {
-                    break;
-                }
-            }
-
-            $debug_output('Found: ' . $pluginFile);
-
-            $pluginFile_found = file_exists($pluginFile . '/' . basename($pluginFile) . '.php');
-
-            return ($pluginFile_found)
-                ? ($pluginFile . '/' . basename($pluginFile) . '.php')
-                : false;
+        // if file exists 
+        if (file_exists($same_name_file)) {
+            return $same_name_file;
         }
+
+        // read all $files and check if any file contains "Plugin Name:"
+        foreach ($files as $file) {
+            $file_content = file_get_contents($plugin_dir . '/' . $file);
+            if (strpos($file_content, 'Plugin Name:') !== false) {
+                return $plugin_dir . '/' . $file;
+            }
+        }
+
+        return false;
     }
 
     /*
@@ -121,11 +74,10 @@ class PluginService
     {
         $plugin_file_content = file_get_contents(static::getPluginFile());
 
-        $version = preg_match('/\* Version: \d+\.\d+\.\d+/', $plugin_file_content, $matches);
+        $regex = '/(?<=Version:).+(?=\n|\s)/';
+        preg_match($regex, $plugin_file_content, $matches);
 
-        return (!$version)
-            ? '0.0.0'
-            : $version;
+        return str_replace(' ', '', $matches[0]);
     }
 
     /*
@@ -136,14 +88,18 @@ class PluginService
      * |--------------------------------------------------------------------------
      * // TODO test
      */
-    public static function setVersion($version)
+    public static function setVersion($new_version)
     {
         $plugin_file_content = file_get_contents(static::getPluginFile());
+        $current_version = static::getVersion();
 
-        $version = preg_replace('/(\* Version:)(\s+)(\d+\.\d+\.\d+)/', '$1 $2' . $version, $plugin_file_content);
+        $regex = '/(?<=Version:).+(?=\n|\s)/';
+        preg_match($regex, $plugin_file_content, $matches);
 
-        return (!$version)
-            ? '0.0.0'
-            : $version;
+        $whitespaces = explode($current_version, $matches[0])[0];
+
+        $plugin_file_content = preg_replace($regex, $whitespaces . $new_version, $plugin_file_content, 1);
+
+        return file_put_contents(static::getPluginFile(), $plugin_file_content);
     }
 }
