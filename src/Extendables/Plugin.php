@@ -86,7 +86,7 @@ abstract class Plugin
             if (
                 (strpos($class, '\\Includes') !== false && strpos($class, '\\Services') === false)
                 || strpos($class, 'nterface') !== false
-                || strpos($class, /* current namespace */ __NAMESPACE__) === false
+                || strpos($class, /* current namespace */ static::$plugin_namespace) === false
             ) {
                 unset($plugin_classes[$class]);
             }
