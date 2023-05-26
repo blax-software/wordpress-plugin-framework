@@ -50,4 +50,23 @@ class SetupService
         // Return the namespace
         return $matches[1];
     }
+
+    /*
+     * |--------------------------------------------------------------------------
+     * | Replace the namespace of a PHP file
+     * |--------------------------------------------------------------------------
+     */
+    public static function replaceNamespaceOfFile($filePath, $oldNamespace, $newNamespace)
+    {
+        // Read the contents of the PHP file
+        $fileContent = file_get_contents($filePath);
+
+        // Replace the existing namespace with the new namespace
+        $modifiedContent = str_replace($oldNamespace, $newNamespace, $fileContent);
+
+        // Write the modified content back to the PHP file
+        file_put_contents($filePath, $modifiedContent);
+
+        return true;
+    }
 }

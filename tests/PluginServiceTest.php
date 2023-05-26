@@ -13,9 +13,8 @@ class PluginServiceTest extends \PHPUnit\Framework\TestCase
 
         $got_plugin_file = PluginService::getPluginFile($test_path);
 
-        echo 'Got plugin file: ' . $got_plugin_file . PHP_EOL;
-
         // assert $got_plugin_file not null
         $this->assertNotNull($got_plugin_file);
+        $this->assertTrue(file_exists($got_plugin_file));
     }
 }
