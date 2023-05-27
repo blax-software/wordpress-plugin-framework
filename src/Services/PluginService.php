@@ -65,6 +65,26 @@ class PluginService
 
     /*
      * |--------------------------------------------------------------------------
+     * | Gets the absolute plugin class
+     * |--------------------------------------------------------------------------
+     * | @return string - The absolute plugin class
+     * |--------------------------------------------------------------------------
+     */
+    public static function getPluginClass()
+    {
+        $plugin_file = static::getPluginFile();
+
+        $plugin_file_content = file_get_contents($plugin_file);
+
+        $regex = '/(?<=class\s).+(?=\sextends\s)/';
+        preg_match($regex, $plugin_file_content, $matches);
+
+        return SetupService::getNamespaceOfFile($plugin_file) . '\\' . $matches[0];
+    }
+
+
+    /*
+     * |--------------------------------------------------------------------------
      * | Get current plugin version number
      * |--------------------------------------------------------------------------
      * | @return string
