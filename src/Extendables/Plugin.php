@@ -113,4 +113,22 @@ abstract class Plugin
     {
         // TODO
     }
+
+    /*
+     * |--------------------------------------------------------------------------
+     * | Checks if is inside Wordpress environment
+     * |--------------------------------------------------------------------------
+     * |
+     * | This method logs a message to the logfile in the plugin's root
+     * |
+     */
+    public static function wordpress()
+    {
+        return [
+            'is_plugin' => strpos(getcwd(), 'wp-content/plugins') !== false,
+            'is_theme' => strpos(getcwd(), 'wp-content/themes') !== false,
+            'is_loaded' => defined('ABSPATH'),
+            'is_active' => function_exists('add_action'),
+        ];
+    }
 }
