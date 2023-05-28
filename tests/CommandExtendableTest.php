@@ -17,9 +17,9 @@ class CommandExtendableTest extends \PHPUnit\Framework\TestCase
                 public static $signature = 'test-command';
                 public static $description = 'This is a test command.';
 
-                protected function execute(\Symfony\Component\Console\Input\InputInterface $input, \Symfony\Component\Console\Output\OutputInterface $output)
+                public function handle()
                 {
-                    $output->writeln('Hello World!');
+                    $this->writelnColor('Hello World!');
                     return Command::SUCCESS;
                 }
             };
@@ -81,5 +81,36 @@ class CommandExtendableTest extends \PHPUnit\Framework\TestCase
 
         $this->assertEquals('Hello World!' . PHP_EOL, $commandTester->getDisplay());
         $this->assertNotEquals('Hello World!20' . PHP_EOL, $commandTester->getDisplay());
+    }
+
+    public function test_test_if_custom_command_can_ask_questions()
+    {
+        $app = $this->getAppWithTestCommand()['app'];
+
+        $test_class = function () {
+            return new class extends Command
+            {
+                public static $signature = 'test-asl';
+                public static $description = 'This command asks for age';
+
+                public function handle()
+                {
+                    $age = $this->ask('How old are you?');
+                    $this->writelnColor("You are {$age} years old.");
+                    return Command::SUCCESS;
+                }
+            };
+        };
+
+        $command = $app->add($test_class());
+
+        $commandTester = new \Symfony\Component\Console\Tester\CommandTester($command);
+        $commandTester->setInputs(['20']);
+        $commandTester->execute([
+            'command' => $command->getName(),
+        ]);
+
+        $this->assertEquals('This command asks for age', $command->getDescription());
+        $this->assertEquals('How old are you?You are 20 years old.' . PHP_EOL, $commandTester->getDisplay());
     }
 }
