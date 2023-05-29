@@ -4,6 +4,8 @@ namespace Blax\Wordpress\Services;
 
 class PluginService
 {
+    public static $plugin_file;
+
     /*
      * |--------------------------------------------------------------------------
      * | Gets the plugin dir
@@ -65,6 +67,32 @@ class PluginService
 
     /*
      * |--------------------------------------------------------------------------
+     * | Gets the plugin file content
+     * |--------------------------------------------------------------------------
+     * | @return string - The content
+     * |--------------------------------------------------------------------------
+     */
+    public static function getPluginFileContent()
+    {
+        return file_get_contents(static::getPluginFile());
+    }
+
+    /*
+     * |--------------------------------------------------------------------------
+     * | Sets the plugin file content
+     * |--------------------------------------------------------------------------
+     * | @return bool - The success
+     * |--------------------------------------------------------------------------
+     */
+    public static function setPluginFileContent($content)
+    {
+        static::getPluginFileContent();
+        return file_put_contents(static::getPluginFile(), $content);
+    }
+
+
+    /*
+     * |--------------------------------------------------------------------------
      * | Gets the absolute plugin class
      * |--------------------------------------------------------------------------
      * | @return string - The absolute plugin class
@@ -74,10 +102,8 @@ class PluginService
     {
         $plugin_file = static::getPluginFile();
 
-        $plugin_file_content = file_get_contents($plugin_file);
-
         $regex = '/(?<=class\s).+(?=\sextends\s)/';
-        preg_match($regex, $plugin_file_content, $matches);
+        preg_match($regex, static::getPluginFileContent(), $matches);
 
         return SetupService::getNamespaceOfFile($plugin_file) . '\\' . $matches[0];
     }
@@ -92,10 +118,8 @@ class PluginService
      */
     public static function getVersion()
     {
-        $plugin_file_content = file_get_contents(static::getPluginFile());
-
         $regex = '/(?<=Version:).+(?=\n|\s)/';
-        preg_match($regex, $plugin_file_content, $matches);
+        preg_match($regex, static::getPluginFileContent(), $matches);
 
         return str_replace(' ', '', $matches[0]);
     }
@@ -109,7 +133,7 @@ class PluginService
      */
     public static function setVersion($new_version)
     {
-        $plugin_file_content = file_get_contents(static::getPluginFile());
+        $plugin_file_content = static::getPluginFileContent();
 
         $regex = '/(?<=Version:).+(?=\n|\s)/';
         preg_match($regex, $plugin_file_content, $matches);
@@ -117,6 +141,42 @@ class PluginService
         $whitespaces = explode(static::getVersion(), $matches[0])[0];
 
         $plugin_file_content = preg_replace($regex, $whitespaces . $new_version, $plugin_file_content, 1);
+
+        return file_put_contents(static::getPluginFile(), $plugin_file_content);
+    }
+
+    /* 
+     * |--------------------------------------------------------------------------
+     * | Get plugin meta
+     * |--------------------------------------------------------------------------
+     * | @return string
+     * |--------------------------------------------------------------------------
+     */
+    public static function getPluginMeta($meta_key)
+    {
+        $regex = '/(?<=' . $meta_key . ':).+(?=\n|\s)/';
+        preg_match($regex, static::getPluginFileContent(), $matches);
+
+        return trim($matches[0]);
+    }
+
+    /*
+     * |--------------------------------------------------------------------------
+     * | Set plugin meta
+     * |--------------------------------------------------------------------------
+     * | @return bool
+     * |--------------------------------------------------------------------------
+     */
+    public static function setPluginMeta($meta_key, $meta_value)
+    {
+        $plugin_file_content = static::getPluginFileContent();
+
+        $regex = '/(?<=' . $meta_key . ':).+(?=\n|\s)/';
+        preg_match($regex, $plugin_file_content, $matches);
+
+        $whitespaces = str_replace(static::getPluginMeta($meta_key), '', $matches[0]);
+
+        $plugin_file_content = preg_replace($regex, $whitespaces . $meta_value, $plugin_file_content, 1);
 
         return file_put_contents(static::getPluginFile(), $plugin_file_content);
     }
