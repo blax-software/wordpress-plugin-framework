@@ -21,6 +21,7 @@
         "symfony/var-dumper": "^6.2"
     },
     "require": {
-        "symfony/console": "^6.2"
+        "symfony/console": "^6.2",
+        "php": ">=7.4"
     }
 }

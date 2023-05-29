@@ -4,6 +4,7 @@
     </a>
 </p>
 
+[![Latest Stable Version](http://poser.pugx.org/blax-software/wordpress-plugin-framework/v)](https://packagist.org/packages/blax-software/wordpress-plugin-framework) [![Total Downloads](http://poser.pugx.org/blax-software/wordpress-plugin-framework/downloads)](https://packagist.org/packages/blax-software/wordpress-plugin-framework) [![Latest Unstable Version](http://poser.pugx.org/blax-software/wordpress-plugin-framework/v/unstable)](https://packagist.org/packages/blax-software/wordpress-plugin-framework) [![License](http://poser.pugx.org/blax-software/wordpress-plugin-framework/license)](https://packagist.org/packages/blax-software/wordpress-plugin-framework)
 
 ## TL;DR
 
