@@ -64,7 +64,8 @@ class ComposerService
 	public static function setNamespace($namespace, $absolute_path_to_composer = null)
 	{
 		$json = static::getJson($absolute_path_to_composer);
-		$json['autoload']['psr-4'] = [$namespace => 'src/'];
+		$value = array_values($json['autoload']['psr-4'])[0];
+		$json['autoload']['psr-4'] = [$namespace => $value];
 		return static::setJson($json, $absolute_path_to_composer);
 	}
 }
