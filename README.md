@@ -8,7 +8,7 @@
 
 ## TL;DR
 
-The backbone for [Wordpress Plugin Framework](https://github.com/blax-software/wordpress-plugin-project)
+The backbone for [Wordpress Plugin Project](https://github.com/blax-software/wordpress-plugin-project)
 
 ## About
 

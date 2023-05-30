@@ -1,5 +1,5 @@
 {
-    "name": "blax-software/wordpress-plugin-framework",
+    "name": "blax/wordpress",
     "description": "Structure to build a good wordpress plugin",
     "type": "library",
     "autoload": {
