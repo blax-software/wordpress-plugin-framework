@@ -5,6 +5,7 @@ namespace Blax\Wordpress\Extendables;
 use Symfony\Component\Console\Command\Command as SymfCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Question\ConfirmationQuestion;
 use Symfony\Component\Console\Question\Question;
@@ -23,6 +24,7 @@ abstract class Command extends SymfCommand
 			->setDescription(static::$description ?? '[No description]');
 
 		$this->configureArguments();
+		$this->configureOptions();
 
 		// ignore too many arguments
 		$this->ignoreValidationErrors();
@@ -30,21 +32,12 @@ abstract class Command extends SymfCommand
 
 	final protected function configureOptions()
 	{
-		$options = $this->input->getOptions();
-
 		preg_match_all('/\{--(\S+)\}/', static::$signature, $matches);
 
 		foreach ($matches[1] as $match) {
-			if (array_key_exists($match, $options)) {
-				$this->writelnColor("Option <fg=yellow>--{$match}</> already exists", 'red');
-				continue;
-			}
-
-			// if match contains "=", set a default value
 			$default = '';
 			if (strpos($match, '=')) {
 				$parts = explode('=', $match);
-				// if contains more than 2 parts throw
 				if (count($parts) > 2) {
 					$this->writelnColor("Option default <fg=yellow>--{$match}</> is invalid", 'red');
 					continue;
@@ -53,17 +46,22 @@ abstract class Command extends SymfCommand
 				$default = $parts[1];
 			}
 
-			$option_description = null;
+			$option_description = '';
 			if (strpos($match, ':')) {
 				$parts = explode(':', $match);
-				// if contains more than 2 parts throw
 				if (count($parts) > 2) {
 					$this->writelnColor("Option description <fg=yellow>--{$match}</> is invalid", 'red');
 					continue;
 				}
 			}
 
-			$this->addOption($match, null, $option_description, $default);
+			$this->addOption(
+				$match,
+				null,
+				InputOption::VALUE_OPTIONAL,
+				$option_description,
+				$default
+			);
 		}
 	}
 
@@ -113,8 +111,6 @@ abstract class Command extends SymfCommand
 	{
 		$this->input  = $input;
 		$this->output = $output;
-
-		$this->configureOptions();
 
 		return $this->handle();
 	}
@@ -182,6 +178,11 @@ abstract class Command extends SymfCommand
 	public function getOption($name)
 	{
 		return $this->input->getOption($name);
+	}
+
+	public function getOptions()
+	{
+		return $this->input->getOptions();
 	}
 
 	public function hasOption($name)
