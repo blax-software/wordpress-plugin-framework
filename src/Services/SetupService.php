@@ -25,7 +25,8 @@ class SetupService
         $modifiedContent = preg_replace(
             '/^namespace\s+([^\s;]+)/m',
             'namespace ' . $newNamespace . '',
-            $fileContent
+            $fileContent,
+            1
         );
 
         // Write the modified content back to the PHP file
@@ -58,7 +59,11 @@ class SetupService
      */
     public static function getNamespaceFromComposer($absolute_path_to_composer)
     {
-        // TODO
+        $composer_json = json_decode(file_get_contents($absolute_path_to_composer), true);
+        $composer_json = $composer_json['autoload']['psr-4'];
+        $composer_json = array_keys($composer_json)[0];
+
+        return $composer_json;
     }
 
     /*
@@ -71,8 +76,15 @@ class SetupService
         // Read the contents of the PHP file
         $fileContent = file_get_contents($filePath);
 
-        // Replace the existing namespace with the new namespace
-        $modifiedContent = str_replace($oldNamespace, $newNamespace, $fileContent);
+        $oldNamespace = str_replace('\\', '\\\\', $oldNamespace);
+        $newNamespace = str_replace('\\', '\\\\', $newNamespace);
+
+        $modifiedContent = preg_replace(
+            '/^namespace\s+' . $oldNamespace . '/m',
+            'namespace ' . $newNamespace . '',
+            $fileContent,
+            1
+        );
 
         // Write the modified content back to the PHP file
         file_put_contents($filePath, $modifiedContent);

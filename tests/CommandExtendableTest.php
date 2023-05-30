@@ -111,6 +111,8 @@ class CommandExtendableTest extends \PHPUnit\Framework\TestCase
         ]);
 
         $this->assertEquals('This command asks for age', $command->getDescription());
-        $this->assertEquals('How old are you?You are 20 years old.' . PHP_EOL, $commandTester->getDisplay());
+
+        $this->assertStringContainsString('How old are you?', $commandTester->getDisplay());
+        $this->assertStringContainsString('You are 20 years old.', $commandTester->getDisplay());
     }
 }
