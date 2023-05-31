@@ -67,7 +67,7 @@ class SetupService
      * | Replace the namespace of a PHP file
      * |--------------------------------------------------------------------------
      */
-	public static function replaceNamespaceOfFile($filePath, $oldNamespace, $newNamespace)
+	public static function replaceNamespaceOfFile($filePath, $oldNamespace, $newNamespace, $replace_use = false)
 	{
 		// Read the contents of the PHP file
 		$fileContent = file_get_contents($filePath);
@@ -80,6 +80,63 @@ class SetupService
 			'namespace ' . $newNamespace . '',
 			$fileContent,
 			1
+		);
+
+		if ($replace_use) {
+			// TODO
+		}
+
+		// Write the modified content back to the PHP file
+		file_put_contents($filePath, $modifiedContent);
+
+		return true;
+	}
+
+	/*
+     * |--------------------------------------------------------------------------
+     * | Replace the use of a namespace
+     * |--------------------------------------------------------------------------
+     */
+	public static function replaceUseNamespaceOfFile($filePath, $oldNamespace, $newNamespace)
+	{
+		// Read the contents of the PHP file
+		$fileContent = file_get_contents($filePath);
+
+		if (substr($oldNamespace, -1) == '\\') {
+			$oldNamespace = substr($oldNamespace, 0, -1);
+		}
+		if (substr($newNamespace, -1) == '\\') {
+			$newNamespace = substr($newNamespace, 0, -1);
+		}
+
+		$oldNamespace = str_replace('\\', '\\\\', $oldNamespace);
+		$newNamespace = str_replace('\\', '\\\\', $newNamespace);
+
+		$modifiedContent = $fileContent;
+
+		// use
+		$modifiedContent = preg_replace(
+			'/use[\s]+' . $oldNamespace . '/m',
+			'use ' . $newNamespace . '',
+			$modifiedContent
+		);
+
+		$modifiedContent = preg_replace(
+			'/use \\\\' . $oldNamespace . '/m',
+			'use \\' . $newNamespace . '',
+			$modifiedContent
+		);
+
+		$modifiedContent = preg_replace(
+			'/extends[\s]\\\\' . $oldNamespace . '/m',
+			'extends \\' . $newNamespace . '',
+			$modifiedContent
+		);
+
+		$modifiedContent = preg_replace(
+			'/extends[\s]+' . $oldNamespace . '/m',
+			'extends ' . $newNamespace . '',
+			$modifiedContent
 		);
 
 		// Write the modified content back to the PHP file
