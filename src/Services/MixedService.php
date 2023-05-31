@@ -4,7 +4,7 @@ namespace Blax\Wordpress\Services;
 
 class Mixedservice
 {
-	function getAllFiles($directory)
+	public static function getAllFiles($directory)
 	{
 		$files = [];
 
