@@ -68,7 +68,7 @@ class SetupServiceTest extends \PHPUnit\Framework\TestCase
 			$this->assertEquals('Blax\Wordpress\\', $original_namespace);
 			$this->assertTrue(SetupService::replaceUseNamespaceOfFile($plugin_file_path, $original_namespace, 'Punti\Drupal'));
 			$this->assertTrue(SetupService::replaceUseNamespaceOfFile($plugin_file_path, 'Punti\Drupal', $original_namespace));
-			$this->assertTrue($plugin_file_content == file_get_contents($plugin_file_path));
+			$this->assertEquals($plugin_file_content, file_get_contents($plugin_file_path));
 		} catch (\Throwable $th) {
 			throw $th;
 		} finally {
@@ -76,6 +76,27 @@ class SetupServiceTest extends \PHPUnit\Framework\TestCase
 		}
 
 		$this->assertTrue(true);
+	}
+
+	public function test_replace_uses_and_namespace()
+	{
+		$plugin_file_path = PluginService::getPluginFile();
+		$plugin_file_content = file_get_contents($plugin_file_path);
+		$original_namespace = ComposerService::getNamespace();
+
+		try {
+			$this->assertEquals('Blax\Wordpress\\', $original_namespace);
+
+			// count occurance of $original_namespace in $plugin_file_content
+			$original_namespace_count = substr_count($plugin_file_content, $original_namespace);
+			$this->assertGreaterThan(1, $original_namespace_count);
+			SetupService::replaceNamespaceOfFile($plugin_file_path, $original_namespace, 'Punti\Drupal', true);
+			$this->assertLessThan(1, substr_count(file_get_contents($plugin_file_path), $original_namespace));
+		} catch (\Throwable $th) {
+			throw $th;
+		} finally {
+			file_put_contents($plugin_file_path, $plugin_file_content);
+		}
 	}
 
 	public function test_getting_namespace_from_composer()

@@ -69,22 +69,31 @@ class SetupService
      */
 	public static function replaceNamespaceOfFile($filePath, $oldNamespace, $newNamespace, $replace_use = false)
 	{
+		if ($replace_use) {
+			self::replaceUseNamespaceOfFile(
+				$filePath,
+				$oldNamespace,
+				$newNamespace
+			);
+		}
+
 		// Read the contents of the PHP file
 		$fileContent = file_get_contents($filePath);
+
+		if (substr($oldNamespace, -1) == '\\') {
+			$oldNamespace = substr($oldNamespace, 0, -1);
+		}
+		if (substr($newNamespace, -1) == '\\') {
+			$newNamespace = substr($newNamespace, 0, -1);
+		}
 
 		$oldNamespace = str_replace('\\', '\\\\', $oldNamespace);
 		$newNamespace = str_replace('\\', '\\\\', $newNamespace);
 
-		$modifiedContent = preg_replace(
-			'/^namespace\s+' . $oldNamespace . '/m',
-			'namespace ' . $newNamespace . '',
-			$fileContent,
-			1
-		);
+		$regex = '/namespace\s+' . $oldNamespace . '/m';
+		$replacement = 'namespace ' . $newNamespace . '';
 
-		if ($replace_use) {
-			// TODO
-		}
+		$modifiedContent = preg_replace($regex, $replacement, $fileContent, 1);
 
 		// Write the modified content back to the PHP file
 		file_put_contents($filePath, $modifiedContent);

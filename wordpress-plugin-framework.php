@@ -7,6 +7,7 @@ namespace Blax\Wordpress;
 require_once __DIR__ . '/vendor/autoload.php';
 
 use Blax\Wordpress\Services\PluginService;
+use Blax\Wordpress\Services\PluginService as XY;
 use \Blax\Wordpress\Services\SetupService;
 use \Blax\Wordpress\Services\ComposerService;
 
