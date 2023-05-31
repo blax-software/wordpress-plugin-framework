@@ -2,6 +2,7 @@
 
 namespace Blax\Wordpress\Tests;
 
+use Blax\Wordpress\Services\PluginService;
 use Blax\Wordpress\Services\SetupService;
 
 class SetupServiceTest extends \PHPUnit\Framework\TestCase
@@ -30,6 +31,12 @@ class SetupServiceTest extends \PHPUnit\Framework\TestCase
 		$this->assertEquals('Blax\Wordpress\Tests', $originalNamespace);
 		$this->assertTrue(SetupService::replaceNamespaceOfFile(__FILE__, $replacing_part, $artificial_namespace));
 		$this->assertTrue(SetupService::replaceNamespaceOfFile(__FILE__, SetupService::getNamespaceOfFile(__FILE__), $originalNamespace));
+
+		$plugin_file_path = PluginService::getPluginFile();
+		$plugin_namespace = SetupService::getNamespaceOfFile($plugin_file_path);
+		$this->assertEquals('Blax\Wordpress', $plugin_namespace);
+		$this->assertTrue(SetupService::replaceNamespaceOfFile($plugin_file_path, $replacing_part, $artificial_namespace));
+		$this->assertTrue(SetupService::replaceNamespaceOfFile($plugin_file_path, SetupService::getNamespaceOfFile($plugin_file_path), $plugin_namespace));
 	}
 
 	public function test_getting_namespace_from_composer()

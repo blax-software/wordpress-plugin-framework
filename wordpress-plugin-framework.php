@@ -1,1 +1,4 @@
 <?php
+
+
+namespace Blax\Wordpress;
