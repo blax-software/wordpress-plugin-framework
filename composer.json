@@ -1,27 +1,27 @@
 {
-	"name": "blax/wordpress",
-	"description": "Structure to build a good wordpress plugin",
-	"type": "library",
-	"autoload": {
-		"psr-4": {
-			"Blax\\Wordpress\\": "src/"
-		},
-		"classmap": [
-			"src/"
-		]
-	},
-	"authors": [
-		{
-			"name": "Blax Software",
-			"email": "office@blax.at"
-		}
-	],
-	"require-dev": {
-		"phpunit/phpunit": "10.2.0",
-		"symfony/var-dumper": "6.3.0"
-	},
-	"require": {
-		"symfony/console": "6.3.0",
-		"php": ">=8.1"
-	}
+    "name": "blax/wordpress",
+    "description": "Structure to build a good wordpress plugin",
+    "type": "library",
+    "autoload": {
+        "psr-4": {
+            "Blax\\Wordpress\\": "src/"
+        },
+        "classmap": [
+            "src/"
+        ]
+    },
+    "authors": [
+        {
+            "name": "Blax Software",
+            "email": "office@blax.at"
+        }
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "10.2.0",
+        "symfony/var-dumper": "6.3.0"
+    },
+    "require": {
+        "symfony/console": "6.3.0",
+        "php": ">=8.1"
+    }
 }

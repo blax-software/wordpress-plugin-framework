@@ -15,14 +15,16 @@ class PluginService
      */
 	public static function getPluginDir()
 	{
-		$pluginFile = __DIR__;
+		$pluginDir = __DIR__;
 
-		// if pluginFile contains /vendor remove it and all characters after
-		if (strpos($pluginFile, '/vendor') !== false) {
-			$pluginFile = substr($pluginFile, 0, strpos($pluginFile, '/vendor'));
+		// if pluginDir contains /vendor remove it and all characters after
+		if (strpos($pluginDir, '/vendor') !== false) {
+			$pluginDir = substr($pluginDir, 0, strpos($pluginDir, '/vendor'));
 		}
 
-		return $pluginFile;
+		$pluginDir = (dirname(static::getPluginFile($pluginDir)) . '/');
+
+		return $pluginDir;
 	}
 
 	/*
