@@ -85,12 +85,13 @@ abstract class Plugin
 	{
 		$plugin_classes = (require static::$plugin_absolute_path . '/vendor/composer/autoload_classmap.php');
 		$logger = LoggerService::channel('plugin_classes');
+		$logger->clear();
 
 		foreach ($plugin_classes as $class => $path) {
 			if (
 				(strpos($class, '\\Includes') !== false && strpos($class, '\\Services') === false)
 				|| strpos($class, 'nterface') !== false
-				|| strpos($class, /* current namespace */ static::$plugin_namespace) === false
+				|| strpos($class, __NAMESPACE__)
 			) {
 				unset($plugin_classes[$class]);
 				$logger->log('Skipping class ' . $class);

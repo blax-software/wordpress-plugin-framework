@@ -29,12 +29,12 @@ class LoggerService
 			}
 
 			if (!file_exists($dir . '/logs/' . $file_name)) {
-				file_put_contents($dir . '/logs/' . $file_name, '');
+				@file_put_contents($dir . '/logs/' . $file_name, '');
 			}
 			return $dir . '/logs/' . $file_name;
 		} else {
 			if (!file_exists($dir . '/log.log')) {
-				file_put_contents($dir . '/log.log', '');
+				@file_put_contents($dir . '/log.log', '');
 			}
 			return $dir . '/log.log';
 		}
@@ -64,6 +64,32 @@ class LoggerService
 
 		$log = $log_prefix . $info . ($context ? ' ' . json_encode($context) : '') . PHP_EOL;
 
-		file_put_contents($path, $log, FILE_APPEND);
+		@file_put_contents($path, $log, FILE_APPEND);
+	}
+
+	/*
+	 * |--------------------------------------------------------------------------
+	 * | Clears current channel or channel from argument
+	 * |--------------------------------------------------------------------------
+	 */
+	public static function clear($channel = null)
+	{
+		$path = static::$logger_path ?? static::getLogFile($channel);
+
+		@file_put_contents($path, '');
+
+		return new static;
+	}
+
+	/*
+	 * |--------------------------------------------------------------------------
+	 * | Gets current log content
+	 * |--------------------------------------------------------------------------
+	 */
+	public static function getContent($channel = null)
+	{
+		$path = static::$logger_path ?? static::getLogFile($channel);
+
+		return @file_get_contents($path);
 	}
 }

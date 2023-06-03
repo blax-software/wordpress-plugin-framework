@@ -47,6 +47,9 @@ class LoggerServiceTest extends \PHPUnit\Framework\TestCase
 		$this->assertFileExists($dir . '/log.log');
 		$this->assertStringContainsString($test_message, file_get_contents($dir . '/log.log'));
 
+		LoggerService::clear();
+		$this->assertStringContainsString('', LoggerService::getContent());
+
 		unlink($dir . '/log.log');
 	}
 
@@ -60,18 +63,25 @@ class LoggerServiceTest extends \PHPUnit\Framework\TestCase
 		$this->assertFileExists($dir . '/log.log');
 		$this->assertStringContainsString($test_message, file_get_contents($dir . '/log.log'));
 
+		LoggerService::channel()->clear();
+		$this->assertStringContainsString('', LoggerService::channel()->getContent());
+
 		unlink($dir . '/log.log');
 	}
 
 	public function test_logging_a_message_in_custom_logger()
 	{
 		$dir = PluginService::getPluginDir();
-		$test_message = 'testing log message';
+		$channel = 'custom';
+		$message = 'testing log message';
 
-		LoggerService::channel('custom')->log($test_message);
+		LoggerService::channel($channel)->log($message);
 
-		$this->assertFileExists($dir . '/logs/custom.log');
-		$this->assertStringContainsString($test_message, file_get_contents($dir . '/logs/custom.log'));
+		$this->assertFileExists($dir . '/logs/' . $channel . '.log');
+		$this->assertStringContainsString($message, file_get_contents($dir . '/logs/' . $channel . '.log'));
+
+		LoggerService::channel($channel)->clear();
+		$this->assertStringContainsString('', LoggerService::channel($channel)->getContent());
 
 		unlink($dir . '/logs/custom.log');
 		rmdir($dir . '/logs');
