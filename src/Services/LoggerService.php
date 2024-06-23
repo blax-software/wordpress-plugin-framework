@@ -20,7 +20,16 @@ class LoggerService
 		if ($file_name) {
 			// if folder logs does not exist create it
 			if (!file_exists($dir . '/logs')) {
-				mkdir($dir . '/logs');
+				try{
+					ob_start();
+					if(!@mkdir($dir . '/logs')){
+						throw new \Exception();
+					}
+				}catch(\Exception $e){
+					static::showAdminError('['.PluginService::getPluginMeta('name').'] Could not create logs folder with permissions 777. Please create it manually in the root of the plugin.');
+				}finally{
+					ob_end_clean();
+				}
 			}
 
 			// if file does not end with .log add to it
@@ -91,5 +100,19 @@ class LoggerService
 		$path = static::$logger_path ?? static::getLogFile($channel);
 
 		return @file_get_contents($path);
+	}
+
+	/*
+	 * |--------------------------------------------------------------------------
+	 * | Show admin error message
+	 * |--------------------------------------------------------------------------
+	 */
+	public static function showAdminError($message)
+	{
+		return add_action('admin_notices', function() use ($message) {
+			echo '<div class="notice notice-error is-dismissible">
+					<p>' . esc_html($message) . '</p>
+				  </div>';
+		});
 	}
 }
