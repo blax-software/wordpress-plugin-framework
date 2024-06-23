@@ -185,4 +185,16 @@ class PluginService
 
 		return file_put_contents(static::getPluginFile(), $plugin_file_content);
 	}
+
+	/*
+     * |--------------------------------------------------------------------------
+     * | Get current plugin namespace
+     * |--------------------------------------------------------------------------
+     * | @return string
+     * |--------------------------------------------------------------------------
+     */
+	public static function getPluginNamespace()
+	{
+		return ComposerService::getNamespace();
+	}
 }
